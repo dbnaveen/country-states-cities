@@ -58,4 +58,17 @@
     overflow: auto;
     padding: 0 2.25rem;
   }
+  .c-s-c-empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #122d4e;
+
+    svg {
+      width: 100px;
+      height: 100px;
+    }
+  }  
 }
