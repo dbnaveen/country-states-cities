@@ -1,22 +1,20 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react'
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import { IconButton } from "@material-ui/core";
 import Icon from '@material-ui/core/Icon';
 import Grid from '@material-ui/core/Grid';
-import { CountryContext } from "../../Country-Context/CountryContext";
 import { StateContext } from "../../Country-Context/StateContext";
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import eventBus from "../../Event-Bus/EventBus";
 
-function AppState() {
-    const [country] = useContext(CountryContext);
+function AppCity() {
+    const [stateVal] = useContext(StateContext);
     const [searchInput, setInputString] = useState("");
-    const filteredList = Object.keys(country).length > 0 ? country.states.filter(ctry => searchInput === "" || ctry.name.toLowerCase().includes(searchInput.toLowerCase())) : [];
-    const [, setState] = useContext(StateContext);
+    const filteredList = Object.keys(stateVal).length > 0 ? stateVal.cities.filter(ctry => searchInput === "" || ctry.name.toLowerCase().includes(searchInput.toLowerCase())) : [];
 
     let handleInputChange = (e) => {
         setInputString(e.target.value);
@@ -24,11 +22,6 @@ function AppState() {
 
     let clearSearch = () => {
         setInputString("");
-    }
-
-    let selectState = (state) => {
-        setState(state);
-        eventBus.dispatch("stateClicked");
     }
 
     let HtmlTooltip = withStyles((theme) => ({
@@ -41,27 +34,25 @@ function AppState() {
         },
     }))(Tooltip);
 
+    /**
+     * It is similar to componentDidMount() in a Class Component.
+     */
     useEffect(() => {
         eventBus.on("countryClicked", () => {
             clearSearch();
         });
-    }, [])
-
-    useEffect(() => {
-        return () => {
-            eventBus.remove("countryClicked");
-            // componentwillunmount in functional component.
-            // Anything in here is fired on component unmount.
-        }
+        eventBus.on("stateClicked", () => {
+            clearSearch();
+        });
     }, [])
 
     return (
         <div className="h-100">
-            <div className="paper-container-header"> State </div>
+            <div className="paper-container-header"> City </div>
             <div className="paper-container-body">
                 <div className="paper-container-search">
                     <form noValidate autoComplete="off">
-                        <TextField value={searchInput} className="search-input" placeholder="Search States ..." variant="outlined" InputProps={{
+                        <TextField value={searchInput} className="search-input" placeholder="Search Cities ..." variant="outlined" InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
                                     <SearchIcon />
@@ -77,25 +68,24 @@ function AppState() {
                 </div>
 
                 <div className="paper-container-list">
-                    {filteredList.map(state => (
-                        <div className="c-s-c-list c-pointer c-hover" key={state.id} onClick={e => selectState(state)}>
+                    {filteredList.map((city, i) => (
+                        <div className="c-s-c-list" key={i}>
                             <Grid container spacing={0}>
                                 <Grid item xs={1}></Grid>
                                 <Grid item xs={9}>
-                                    <span className="c-s-c-name"> {state.name} </span>
-                                    <span className="c-s-c-code"> {state.state_code} </span>
+                                    <span className="c-s-c-name"> {city.name} </span>
                                 </Grid>
                                 <HtmlTooltip
                                     title={
                                         <React.Fragment>
                                             <Typography>
-                                                <span className="tooltip-key">State &nbsp;= </span> <span className="tooltip-val">{state.name}</span>
+                                                <span className="tooltip-key">City &nbsp;= </span> <span className="tooltip-val">{city.name}</span>
                                             </Typography>
                                             <Typography>
-                                                <span className="tooltip-key">Code &nbsp;= </span> <span className="tooltip-val">{state.state_code}</span>
+                                                <span className="tooltip-key">Latitude &nbsp;= </span> <span className="tooltip-val">{city.latitude}</span>
                                             </Typography>
                                             <Typography>
-                                                <span className="tooltip-key">Total Cities &nbsp;= </span> <span className="tooltip-val">{state.cities.length}</span>
+                                                <span className="tooltip-key">Longitude &nbsp;= </span> <span className="tooltip-val">{city.longitude}</span>
                                             </Typography>
                                         </React.Fragment>
                                     }>
@@ -118,4 +108,4 @@ function AppState() {
     )
 }
 
-export default AppState
+export default AppCity

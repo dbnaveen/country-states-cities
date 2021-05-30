@@ -7,12 +7,18 @@ import Icon from '@material-ui/core/Icon';
 import Grid from '@material-ui/core/Grid';
 import CountryStateCityData from "../../../geo_data/countries+states+cities.json";
 import { CountryContext } from "../../Country-Context/CountryContext";
+import { StateContext } from "../../Country-Context/StateContext";
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import eventBus from "../../Event-Bus/EventBus";
 
 function AppCtry() {
 
     const [searchInput, setInputString] = useState("");
     const filteredList = CountryStateCityData.filter(ctry => searchInput === "" || ctry.name.toLowerCase().includes(searchInput.toLowerCase()));
     const [, setCountry] = useContext(CountryContext);
+    const [, setState] = useContext(StateContext);
 
     let handleInputChange = (e) => {
         setInputString(e.target.value);
@@ -22,9 +28,21 @@ function AppCtry() {
         setInputString("");
     }
 
-    let selectCountry = (ctry) => {
+    let selectCountry = (ctry, e) => {
         setCountry(ctry);
+        setState({});
+        eventBus.dispatch("countryClicked");
     }
+
+    let HtmlTooltip = withStyles((theme) => ({
+        tooltip: {
+            backgroundColor: '#112D4E',
+            maxWidth: 275,
+            fontSize: theme.typography.pxToRem(14),
+            padding: "10px 16px",
+            boxShadow: "rgb(0 0 0 / 20%) 0px 3px 3px -2px, rgb(0 0 0 / 14%) 0px 3px 4px 0px, rgb(0 0 0 / 12%) 0px 1px 8px 0px"
+        },
+    }))(Tooltip);
 
     return (
         <div className="h-100">
@@ -48,17 +66,35 @@ function AppCtry() {
                 </div>
 
                 <div className="paper-container-list">
-                    {filteredList.map(ctry => (
-                        <div className="c-s-c-list" key={ctry.id} onClick={e => selectCountry(ctry)}>
+                    {filteredList.map((ctry, i) => (
+                        <div className={"c-s-c-list c-pointer c-hover"} key={i} onClick={e => selectCountry(ctry, e)}>
                             <Grid container spacing={0}>
                                 <Grid item xs={2} className="c-s-c-img"> {ctry.emoji} </Grid>
                                 <Grid item xs={8}>
                                     <span className="c-s-c-name"> {ctry.name} </span>
                                     <span className="c-s-c-code"> {ctry.iso2} </span>
                                 </Grid>
-                                <Grid item xs={2} className="c-s-c-info">
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" /></svg>
-                                </Grid>
+                                <HtmlTooltip
+                                    title={
+                                        <React.Fragment>
+                                            <Typography>
+                                                <span className="tooltip-key">Country &nbsp;= </span> <span className="tooltip-val">{ctry.name}</span>
+                                            </Typography>
+                                            <Typography>
+                                                <span className="tooltip-key">Capital &nbsp;= </span> <span className="tooltip-val">{ctry.capital}</span>
+                                            </Typography>
+                                            <Typography>
+                                                <span className="tooltip-key">Region &nbsp;= </span> <span className="tooltip-val">{ctry.region}</span>
+                                            </Typography>
+                                            <Typography>
+                                                <span className="tooltip-key">Total States &nbsp;= </span> <span className="tooltip-val">{ctry.states.length}</span>
+                                            </Typography>
+                                        </React.Fragment>
+                                    }>
+                                    <Grid item xs={2} className="c-s-c-info">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" /></svg>
+                                    </Grid>
+                                </HtmlTooltip>
                             </Grid>
                         </div>
                     ))}

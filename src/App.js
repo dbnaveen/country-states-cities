@@ -1,6 +1,7 @@
 import './App.scss';
 import Navbar from "./components/App-Header/Navbar";
 import AppBody from "./components/App-Body/AppBody";
+import AppFooter from "./components/App-Footer/AppFooter";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <AppBody />
       </div>
       <div className="App-Footer">
+        <AppFooter />
       </div>
     </div>
   );

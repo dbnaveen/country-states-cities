@@ -26,6 +26,8 @@
     height: calc(100% - 45px);
     overflow: hidden;
     background-image: linear-gradient(#dbe2ef, #f9f7f7);
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
   }
   &-search {
     height: 85px;
@@ -71,4 +73,7 @@
       height: 100px;
     }
   }  
+  .loading_arrow {
+    background-color: green;
+  }   
 }
