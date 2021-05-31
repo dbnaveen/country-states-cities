@@ -1,9 +1,7 @@
-```
+
 This is a simple react application to show list of countries, states of each selected country 
 and cities for a particular state
-```
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Application Link
 
