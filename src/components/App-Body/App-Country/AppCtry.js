@@ -19,6 +19,7 @@ function AppCtry() {
     const filteredList = CountryStateCityData.filter(ctry => searchInput === "" || ctry.name.toLowerCase().includes(searchInput.toLowerCase()));
     const [, setCountry] = useContext(CountryContext);
     const [, setState] = useContext(StateContext);
+    const [selectedList, setSelectedList] = useState("");
 
     let handleInputChange = (e) => {
         setInputString(e.target.value);
@@ -28,10 +29,11 @@ function AppCtry() {
         setInputString("");
     }
 
-    let selectCountry = (ctry, e) => {
+    let selectCountry = (ctry) => {
         setCountry(ctry);
         setState({});
         eventBus.dispatch("countryClicked");
+        setSelectedList(ctry.name);
     }
 
     let HtmlTooltip = withStyles((theme) => ({
@@ -67,7 +69,7 @@ function AppCtry() {
 
                 <div className="paper-container-list">
                     {filteredList.map((ctry, i) => (
-                        <div className={"c-s-c-list c-pointer c-hover"} key={i} onClick={e => selectCountry(ctry, e)}>
+                        <div className={"c-s-c-list c-pointer c-hover " + (selectedList === ctry.name ? "list-selected" : "")} key={i} onClick={() => selectCountry(ctry)}>
                             <Grid container spacing={0}>
                                 <Grid item xs={2} className="c-s-c-img"> {ctry.emoji} </Grid>
                                 <Grid item xs={8}>

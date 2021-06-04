@@ -17,6 +17,7 @@ function AppState() {
     const [searchInput, setInputString] = useState("");
     const filteredList = Object.keys(country).length > 0 ? country.states.filter(ctry => searchInput === "" || ctry.name.toLowerCase().includes(searchInput.toLowerCase())) : [];
     const [, setState] = useContext(StateContext);
+    const [selectedList, setSelectedList] = useState("");
 
     let handleInputChange = (e) => {
         setInputString(e.target.value);
@@ -29,6 +30,7 @@ function AppState() {
     let selectState = (state) => {
         setState(state);
         eventBus.dispatch("stateClicked");
+        setSelectedList(state.name);
     }
 
     let HtmlTooltip = withStyles((theme) => ({
@@ -78,7 +80,7 @@ function AppState() {
 
                 <div className="paper-container-list">
                     {filteredList.map(state => (
-                        <div className="c-s-c-list c-pointer c-hover" key={state.id} onClick={e => selectState(state)}>
+                        <div className={"c-s-c-list c-pointer c-hover " + (selectedList === state.name ? "list-selected" : "")} key={state.id} onClick={e => selectState(state)}>
                             <Grid container spacing={0}>
                                 <Grid item xs={1}></Grid>
                                 <Grid item xs={9}>
